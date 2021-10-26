@@ -1,5 +1,5 @@
 (defproject io.github.FieryCod/holy-lambda-ring-adapter "0.0.1"
-  :description "Adapter between Ring<->Holy Lambda"
+  :description "An adapter between Ring Core request/response model and Holy Lambda. Run Ring applications on AWS Lambda"
 
   :url "https://github.com/FieryCod/holy-lambda-ring-adapter"
 
@@ -31,7 +31,9 @@
   :profiles {:eftest  {:resource-paths ["resources-test"]
                        :global-vars    {*warn-on-reflection* true}
                        :dependencies   [[eftest/eftest "0.5.9"]
+                                        [io.github.FieryCod/holy-lambda "0.5.1-SNAPSHOT"]
                                         [ring "1.9.4"]]
                        :plugins        [[lein-eftest "0.5.9"]]}
+             :dev     {:dependencies [[io.github.FieryCod/holy-lambda "0.5.1-SNAPSHOT"]]}
              :uberjar {:jvm-opts ["-Dclojure.compiler.direct-linking=true"
                                   "-Dclojure.spec.skip-macros=true"]}})
