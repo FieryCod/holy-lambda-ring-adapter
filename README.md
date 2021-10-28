@@ -10,6 +10,8 @@
 </p>
 
 ## Compatibility
+  - AWS ApiGateway Lambda Integration
+    - [HttpApi](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html#http-api-examples)
   - Java Version >= 11
   - GraalVM Native Image >= 21.2.0
   - Holy Lambda >= 0.6.0
