@@ -31,11 +31,11 @@
   ByteArrayInputStream
   (to-hl-response-body [^ByteArrayInputStream body]
     {:body     (.readAllBytes body)
-     :encoded? false})
+     :encoded? true})
 
   InputStream
   (to-hl-response-body [^InputStream body]
-    {:body     (.readAllBytes body)
+    {:body     (new String (.readAllBytes body))
      :encoded? false})
 
   File
@@ -45,7 +45,7 @@
 
   String
   (to-hl-response-body [^String body]
-    {:body    (.getBytes body)
+    {:body     body
      :encoded? false})
 
   URL
@@ -54,12 +54,12 @@
      :encoded? true})
 
   IPersistentSet
-  (to-hl-response-body [^IPersistentMap body]
+  (to-hl-response-body [^IPersistentSet body]
     {:body     body
      :encoded? false})
 
   PersistentVector
-  (to-hl-response-body [^IPersistentMap body]
+  (to-hl-response-body [^PersistentVector body]
     {:body     body
      :encoded? false})
 
@@ -70,12 +70,12 @@
 
   ISeq
   (to-hl-response-body [^ISeq body]
-    {:body     (.getBytes (s/join "\n" (map str body)))
+    {:body     (s/join "\n" (map str body))
      :encoded? false})
 
   Object
   (to-hl-response-body [^Object body]
-    {:body     (.getBytes (str body))
+    {:body     (str body)
      :encoded? false})
 
   nil

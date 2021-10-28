@@ -192,17 +192,17 @@
                 :body            "Hello world",
                 :isBase64Encoded false,
                 :headers         nil}
-               (bytes-response->string-response (hra/ring-response->hl-response (handler (request->ring-request-test request2))))))
+               (hra/ring-response->hl-response (handler (request->ring-request-test request2)))))
       (t/is (= {:statusCode      200,
                 :body            "hello world HTTP/1.1",
                 :isBase64Encoded false,
                 :headers         {"something" "something"}}
-               (bytes-response->string-response ((hra/wrap-hl-req-res-model basic-ring-handler) request2))))
+               ((hra/wrap-hl-req-res-model basic-ring-handler) request2)))
       (t/is (= {:statusCode      200,
                 :body            "hello world HTTP/1.1",
                 :isBase64Encoded false,
                 :headers         {"something" "something"}}
-               (bytes-response->string-response ((hra/wrap-hl-req-res-model basic-ring-handler-async) request2 identity identity)))))))
+               ((hra/wrap-hl-req-res-model basic-ring-handler-async) request2 identity identity))))))
 
 (t/deftest http-api-json-coerce-1
   (t/testing "json coercion should work"
@@ -245,14 +245,14 @@
       ;; The case where (HL <= 0.6.1) does not automatically decodes the input
       (t/is (= {:statusCode      200,
                 :body            "{\"hello\":\"world\",\"inner-body\":{\"hello\":\"world\"}}",
-                :isBase64Encoded false,
+                :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
                (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) request))))
 
       ;; The case where (HL >= 0.6.2) does automatically decodes the input
       (t/is (= {:statusCode      200,
                 :body            "{\"hello\":\"world\",\"inner-body\":{\"hello\":\"world\"}}",
-                :isBase64Encoded false,
+                :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
                (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) (-> request
                                                                                          (assoc-in [:event :body] "{\n\t\"hello\": \"world\"\n}")
@@ -302,19 +302,19 @@
 
       (t/is (= {:statusCode      200,
                 :body            "{\"hello\":\"world\",\"form-params\":{\"hello\":\"world\"}}",
-                :isBase64Encoded false,
+                :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
                (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) request))))
       (t/is (= {:statusCode      200,
                 :body
                 "{\"hello\":\"world\",\"form-params\":{\"a3\":\"3\",\"a9\":\"9\",\"a7\":\"7\",\"a6\":\"6\",\"a8\":\"8\",\"a\":[\"1\",\"2\",\"3\"],\"a4\":\"4\",\"a1\":\"1\",\"a5\":\"5\",\"a2\":\"2\"}}",
-                :isBase64Encoded false,
+                :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
                (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&a2=2&a=1&a=2&a=3")))))
       (t/is (= {:statusCode      200,
                 :body
                 "{\"hello\":\"world\",\"form-params\":{\"a3\":\"3\",\"a9\":\"9\",\"a7\":\"7\",\"a6\":\"6\",\"a8\":\"8\",\"a\":[\"1\",\"2\",\"3\"],\"a4\":\"4\",\"a1\":\"1\",\"a5\":\"5\",\"Hello World It's Me You Looking For\":\"Hello World ! ! !\",\"a2\":\"2\"}}",
-                :isBase64Encoded false,
+                :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
                (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&Hello+World+It%27s+Me+You+Looking+For=Hello+World+%21+%21+%21&a2=2&a=1&a=2&a=3"))))))))
 
