@@ -15,43 +15,43 @@
   - Holy Lambda >= 0.6.0
 
 ## Usage
-  1. With plain [ring](https://github.com/ring-clojure/ring)
-  ```clojure
-  (ns core
-   (:require
-    [fierycod.holy-lambda-ring-adapter.core :as hlra]
-    [fierycod.holy-lambda.core :as h])
-
-  (defn ring-handler
-    [request]
-    {:status 200
-     :headers {}
-     :body \"Hello World\"}
-
-  (def HttpApiProxyGateway (hlra/wrap-hl-req-res-model ring-handler))
-
-  (h/entrypoint [#'HttpApiProxyGateway])
-  ```
+  - **With plain [ring](https://github.com/ring-clojure/ring)**
+    ```clojure
+    (ns core
+     (:require
+      [fierycod.holy-lambda-ring-adapter.core :as hlra]
+      [fierycod.holy-lambda.core :as h])
   
-  2. With Reitit & Muuntaja [reitit](https://github.com/metosin/reitit)
-  ```clojure
-  (ns core
-   (:require
-    [fierycod.holy-lambda-ring-adapter.core :as hlra]
-    [fierycod.holy-lambda.core :as h])
-
-  (def muuntaja-ring-handler
-    (ring/ring-handler
-      (ring/router
-        routes
-        {:data {:muuntaja   instance
-                :coercion   coerction
-                :middleware middlewares}})))
-
-  (def HttpApiProxyGateway (hlra/wrap-hl-req-res-model muuntaja-ring-handler))
-
-  (h/entrypoint [#'HttpApiProxyGateway])
-  ```
+    (defn ring-handler
+      [request]
+      {:status 200
+       :headers {}
+       :body \"Hello World\"}
+  
+    (def HttpApiProxyGateway (hlra/wrap-hl-req-res-model ring-handler))
+  
+    (h/entrypoint [#'HttpApiProxyGateway])
+    ```
+  
+  - **With Reitit & Muuntaja [reitit](https://github.com/metosin/reitit)***
+    ```clojure
+    (ns core
+     (:require
+      [fierycod.holy-lambda-ring-adapter.core :as hlra]
+      [fierycod.holy-lambda.core :as h])
+  
+    (def muuntaja-ring-handler
+      (ring/ring-handler
+        (ring/router
+          routes
+          {:data {:muuntaja   instance
+                  :coercion   coerction
+                  :middleware middlewares}})))
+  
+    (def HttpApiProxyGateway (hlra/wrap-hl-req-res-model muuntaja-ring-handler))
+  
+    (h/entrypoint [#'HttpApiProxyGateway])
+    ```
 
 ## Companies & Inviduals using Holy Lambda Ring Adapter?
   - [retailic](https://retailic.com/) 

@@ -35,5 +35,4 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('deps.edn') }}
 
       - name: Test the adapter
-        run: lein with-profile eftest eftest
-
+        run: clojure -M:dev:test
