@@ -33,7 +33,7 @@
     (h/entrypoint [#'HttpApiProxyGateway])
     ```
   
-  - **With Reitit & Muuntaja [reitit](https://github.com/metosin/reitit)***
+  - **With Reitit & Muuntaja [reitit](https://github.com/metosin/reitit)**
     ```clojure
     (ns core
      (:require
