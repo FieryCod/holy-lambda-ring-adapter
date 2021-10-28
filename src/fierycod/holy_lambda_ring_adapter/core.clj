@@ -4,7 +4,7 @@
    [java.util Base64 Base64$Decoder Base64$Encoder]
    [java.net URL]
    [java.nio.file Files]
-   [clojure.lang ISeq IPersistentMap])
+   [clojure.lang ISeq IPersistentMap PersistentVector IPersistentSet])
   (:require
    [ring.util.response :as resp]
    [clojure.string :as s]
@@ -43,14 +43,24 @@
     {:body     (.encode ^Base64$Encoder @base64-encoder ^bytes (Files/readAllBytes (.toPath body)))
      :encoded? true})
 
+  String
+  (to-hl-response-body [^String body]
+    {:body    (.getBytes body)
+     :encoded? false})
+
   URL
   (to-hl-response-body [^URL body]
     {:body     (.encode ^Base64$Encoder @base64-encoder ^bytes (.readAllBytes (.getInputStream (.openConnection body))))
      :encoded? true})
 
-  ISeq
-  (to-hl-response-body [^ISeq body]
-    {:body     (s/join "\n" (map to-hl-response-body body))
+  IPersistentSet
+  (to-hl-response-body [^IPersistentMap body]
+    {:body     body
+     :encoded? false})
+
+  PersistentVector
+  (to-hl-response-body [^IPersistentMap body]
+    {:body     body
      :encoded? false})
 
   IPersistentMap
@@ -58,9 +68,14 @@
     {:body     body
      :encoded? false})
 
+  ISeq
+  (to-hl-response-body [^ISeq body]
+    {:body     (.getBytes (s/join "\n" (map str body)))
+     :encoded? false})
+
   Object
   (to-hl-response-body [^Object body]
-    {:body     (str body)
+    {:body     (.getBytes (str body))
      :encoded? false})
 
   nil
