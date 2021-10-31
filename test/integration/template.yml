@@ -23,14 +23,23 @@ Globals:
         HL_ENTRYPOINT: !Ref Entrypoint
 
 Resources:
+  DependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: DependenciesLayer
+      ContentUri: ./.holy-lambda/bb-clj-deps
+
   ExampleLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: provided.al2
       Handler: core.ExampleLambda
-      CodeUri: .
+      CodeUri: src
       Layers:
-        - arn:aws:lambda:eu-central-1:443526418261:layer:holy-lambda-babashka-runtime-amd64:1
+        - arn:aws:lambda:eu-central-1:443526418261:layer:holy-lambda-babashka-runtime-amd64:2
+        - !Ref DependenciesLayer
+      # Architectures:
+      #   - arm64
       Events:
         HelloEvent:
           Type: HttpApi

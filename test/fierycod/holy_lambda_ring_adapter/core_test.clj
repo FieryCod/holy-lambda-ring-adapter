@@ -256,7 +256,7 @@
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
                (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) (-> request
                                                                                          (assoc-in [:event :body] "{\n\t\"hello\": \"world\"\n}")
-                                                                                         (assoc-in [:event :parsed-body] {:hello "world"})))))))))
+                                                                                         (assoc-in [:event :body-parsed] {:hello "world"})))))))))
 
 
 (t/deftest http-api-form-coerce-1

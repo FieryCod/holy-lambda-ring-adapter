@@ -1,106 +1,10 @@
 (ns fierycod.holy-lambda-ring-adapter.core
-  (:import
-   [java.io InputStream File ByteArrayInputStream]
-   [java.util Base64 Base64$Decoder Base64$Encoder]
-   [java.net URL]
-   [java.nio.file Files]
-   [clojure.lang ISeq IPersistentMap PersistentVector IPersistentSet])
   (:require
-   [ring.util.response :as resp]
    [clojure.string :as s]
-   [clojure.java.io :as io]))
+   [fierycod.holy-lambda-ring-adapter.impl :as impl]))
 
-(set! *warn-on-reflection* true)
-
-;; See https://github.com/ring-clojure/ring/pull/447/files
-(defmethod resp/resource-data :resource
-  [^URL url]
-  ;; GraalVM resource scheme
-  (let [resource (.openConnection url)]
-    {:content        (.getInputStream resource)
-     :content-length (#'ring.util.response/connection-content-length resource)
-     :last-modified  (#'ring.util.response/connection-last-modified resource)}))
-
-(def base64-decoder (delay (Base64/getDecoder)))
-(def base64-encoder (delay (Base64/getEncoder)))
-
-(defprotocol ^:private RingResponseBody
-  (to-hl-response-body [body] "Adapts the RingResponseBody to valid HLResponseBody"))
-
-(extend-protocol RingResponseBody
-  ByteArrayInputStream
-  (to-hl-response-body [^ByteArrayInputStream body]
-    {:body     (.readAllBytes body)
-     :encoded? true})
-
-  InputStream
-  (to-hl-response-body [^InputStream body]
-    {:body     (new String (.readAllBytes body))
-     :encoded? false})
-
-  File
-  (to-hl-response-body [^File body]
-    {:body     (.encode ^Base64$Encoder @base64-encoder ^bytes (Files/readAllBytes (.toPath body)))
-     :encoded? true})
-
-  String
-  (to-hl-response-body [^String body]
-    {:body     body
-     :encoded? false})
-
-  URL
-  (to-hl-response-body [^URL body]
-    {:body     (.encode ^Base64$Encoder @base64-encoder ^bytes (.readAllBytes (.getInputStream (.openConnection body))))
-     :encoded? true})
-
-  IPersistentSet
-  (to-hl-response-body [^IPersistentSet body]
-    {:body     body
-     :encoded? false})
-
-  PersistentVector
-  (to-hl-response-body [^PersistentVector body]
-    {:body     body
-     :encoded? false})
-
-  IPersistentMap
-  (to-hl-response-body [^IPersistentMap body]
-    {:body     body
-     :encoded? false})
-
-  ISeq
-  (to-hl-response-body [^ISeq body]
-    {:body     (s/join "\n" (map str body))
-     :encoded? false})
-
-  Object
-  (to-hl-response-body [^Object body]
-    {:body     (str body)
-     :encoded? false})
-
-  nil
-  (to-hl-response-body [_]
-    {:body     nil
-     :encoded? false}))
-
-(defprotocol ^:private HLRequestBody
-  (to-ring-request-body [body base64?] "Adapts the HLRequestBody to valid RingRequestBody"))
-
-(extend-protocol HLRequestBody
-  String
-  (to-ring-request-body [^String body base64?]
-    (io/input-stream
-     (if-not base64?
-       (.getBytes body)
-       (.decode ^Base64$Decoder @base64-decoder ^String body))))
-
-  Object
-  (to-ring-request-body [^Object body base64?]
-    (pr-str body))
-
-  nil
-  (to-ring-request-body [_ _]
-    nil))
+#?(:bb nil
+   :clj (set! *warn-on-reflection* true))
 
 (defn hl-request->ring-request
   "Transforms valid Holy Lambda request to compatible Ring request
@@ -130,8 +34,9 @@
         http        (request-ctx :http)
         headers     (event :headers)
         base64?     (event :isBase64Encoded)]
-    {:server-port    (some-> (get headers "x-forwarded-port") (Integer/parseInt))
-     :body           (to-ring-request-body (:body event) base64?)
+    {:server-port    #?(:clj (some-> (get headers "x-forwarded-port") (Integer/parseInt))
+                        :default nil)
+     :body           (impl/to-ring-request-body (:body event) base64?)
      :server-name    (get http :sourceIp)
      :remote-addr    (get http :sourceIp)
      :uri            (get http :path)
@@ -174,7 +79,7 @@
   ```"
   [response]
   (let [^RingResponseBody body  (:body response)
-        {:keys [body encoded?]} (to-hl-response-body body)]
+        {:keys [body encoded?]} (impl/to-hl-response-body body)]
     {:statusCode      (:status response)
      :body            body
      :isBase64Encoded encoded?
