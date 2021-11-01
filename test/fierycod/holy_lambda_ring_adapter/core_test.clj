@@ -244,19 +244,19 @@
 
       ;; The case where (HL <= 0.6.1) does not automatically decodes the input
       (t/is (= {:statusCode      200,
-                :body            "{\"hello\":\"world\",\"inner-body\":{\"hello\":\"world\"}}",
+                :body            "eyJoZWxsbyI6IndvcmxkIiwiaW5uZXItYm9keSI6eyJoZWxsbyI6IndvcmxkIn19",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) request))))
+               ((hra/wrap-hl-req-res-model handler) request)))
 
       ;; The case where (HL >= 0.6.2) does automatically decodes the input
       (t/is (= {:statusCode      200,
-                :body            "{\"hello\":\"world\",\"inner-body\":{\"hello\":\"world\"}}",
+                :body            "eyJoZWxsbyI6IndvcmxkIiwiaW5uZXItYm9keSI6eyJoZWxsbyI6IndvcmxkIn19",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) (-> request
-                                                                                         (assoc-in [:event :body] "{\n\t\"hello\": \"world\"\n}")
-                                                                                         (assoc-in [:event :body-parsed] {:hello "world"})))))))))
+               ((hra/wrap-hl-req-res-model handler) (-> request
+                                                        (assoc-in [:event :body] "{\n\t\"hello\": \"world\"\n}")
+                                                        (assoc-in [:event :body-parsed] {:hello "world"}))))))))
 
 
 (t/deftest http-api-form-coerce-1
@@ -301,22 +301,20 @@
                                                            :form-params (:form-params _request)}})}}]])]
 
       (t/is (= {:statusCode      200,
-                :body            "{\"hello\":\"world\",\"form-params\":{\"hello\":\"world\"}}",
+                :body            "eyJoZWxsbyI6IndvcmxkIiwiZm9ybS1wYXJhbXMiOnsiaGVsbG8iOiJ3b3JsZCJ9fQ==",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) request))))
+               ((hra/wrap-hl-req-res-model handler) request)))
       (t/is (= {:statusCode      200,
-                :body
-                "{\"hello\":\"world\",\"form-params\":{\"a3\":\"3\",\"a9\":\"9\",\"a7\":\"7\",\"a6\":\"6\",\"a8\":\"8\",\"a\":[\"1\",\"2\",\"3\"],\"a4\":\"4\",\"a1\":\"1\",\"a5\":\"5\",\"a2\":\"2\"}}",
+                :body "eyJoZWxsbyI6IndvcmxkIiwiZm9ybS1wYXJhbXMiOnsiYTMiOiIzIiwiYTkiOiI5IiwiYTciOiI3IiwiYTYiOiI2IiwiYTgiOiI4IiwiYSI6WyIxIiwiMiIsIjMiXSwiYTQiOiI0IiwiYTEiOiIxIiwiYTUiOiI1IiwiYTIiOiIyIn19",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&a2=2&a=1&a=2&a=3")))))
+               ((hra/wrap-hl-req-res-model handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&a2=2&a=1&a=2&a=3"))))
       (t/is (= {:statusCode      200,
-                :body
-                "{\"hello\":\"world\",\"form-params\":{\"a3\":\"3\",\"a9\":\"9\",\"a7\":\"7\",\"a6\":\"6\",\"a8\":\"8\",\"a\":[\"1\",\"2\",\"3\"],\"a4\":\"4\",\"a1\":\"1\",\"a5\":\"5\",\"Hello World It's Me You Looking For\":\"Hello World ! ! !\",\"a2\":\"2\"}}",
+                :body "eyJoZWxsbyI6IndvcmxkIiwiZm9ybS1wYXJhbXMiOnsiYTMiOiIzIiwiYTkiOiI5IiwiYTciOiI3IiwiYTYiOiI2IiwiYTgiOiI4IiwiYSI6WyIxIiwiMiIsIjMiXSwiYTQiOiI0IiwiYTEiOiIxIiwiYTUiOiI1IiwiSGVsbG8gV29ybGQgSXQncyBNZSBZb3UgTG9va2luZyBGb3IiOiJIZWxsbyBXb3JsZCAhICEgISIsImEyIjoiMiJ9fQ==",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               (bytes-response->string-response ((hra/wrap-hl-req-res-model handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&Hello+World+It%27s+Me+You+Looking+For=Hello+World+%21+%21+%21&a2=2&a=1&a=2&a=3"))))))))
+               ((hra/wrap-hl-req-res-model handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&Hello+World+It%27s+Me+You+Looking+For=Hello+World+%21+%21+%21&a2=2&a=1&a=2&a=3")))))))
 
 (t/deftest binary-alike-data-response-1
   (t/testing "should correctly base64 encode a file"

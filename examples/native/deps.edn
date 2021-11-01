@@ -1,0 +1,34 @@
+{:deps {org.clojure/clojure                         {:mvn/version "1.10.3"}
+        com.github.clj-easy/graal-build-time        {:mvn/version "0.1.4"}
+        io.github.FieryCod/holy-lambda              {:mvn/version "0.6.2"}
+        io.github.FieryCod/holy-lambda-ring-adapter {:local/root "../../"}
+        ring/ring                                   {:mvn/version "1.9.4"}
+        metosin/muuntaja                            {:mvn/version "0.6.8"}
+        metosin/malli                               {:mvn/version "0.6.2"}
+        metosin/reitit-core                         {:mvn/version "0.5.15"}
+        metosin/reitit-middleware                   {:mvn/version "0.5.15"}
+        metosin/reitit-malli                        {:mvn/version "0.5.15"}
+        metosin/reitit-ring                         {:mvn/version "0.5.15"}
+        metosin/reitit-swagger                      {:mvn/version "0.5.15"}
+        com.stuartsierra/component                  {:mvn/version "1.0.0"}
+        metosin/reitit-swagger-ui                   {:mvn/version "0.5.15"
+                                                     :exclusions  [metosin/ring-swagger-ui]}
+        metosin/ring-swagger-ui                     {:mvn/version "3.46.0-1"}}
+
+ :paths ["src" "resources"]
+
+ :aliases {:uberjar-lambda {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
+                            :exec-fn      hf.depstar/uberjar
+                            :exec-args    {:aot        ["example.lambda"]
+                                           :main-class "example.lambda"
+                                           :jar        ".holy-lambda/build/output.jar"
+                                           :jvm-opts   ["-Dclojure.compiler.direct-linking=true"
+                                                        "-Dclojure.spec.skip-macros=true"]}}
+           :uberjar-server {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
+                            :exec-fn      hf.depstar/uberjar
+                            :exec-args    {:aot        ["example.server"]
+                                           :main-class "example.server"
+                                           :jar        ".holy-lambda/build/output.jar"
+                                           :jvm-opts   ["-Dclojure.compiler.direct-linking=true"
+                                                        "-Dclojure.spec.skip-macros=true"]}}
+           }}

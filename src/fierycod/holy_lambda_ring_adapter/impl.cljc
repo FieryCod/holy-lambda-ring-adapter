@@ -4,7 +4,7 @@
    [java.util Base64 Base64$Decoder Base64$Encoder]
    [java.net URL]
    [java.nio.file Files]
-   [clojure.lang ISeq IPersistentMap PersistentVector IPersistentSet])
+   [clojure.lang IPersistentCollection])
   #?(:bb
      (:require
       [clojure.string :as s]
@@ -38,17 +38,17 @@
 (extend-protocol RingResponseBody
   ByteArrayInputStream
   (to-hl-response-body [^ByteArrayInputStream body]
-    {:body     (.readAllBytes body)
+    {:body     (new String ^bytes (.encode ^Base64$Encoder @base64-encoder (.readAllBytes body)))
      :encoded? true})
 
   InputStream
   (to-hl-response-body [^InputStream body]
-    {:body     (new String (.readAllBytes body))
-     :encoded? false})
+    {:body     (new String ^bytes (.encode ^Base64$Encoder @base64-encoder (.readAllBytes body)))
+     :encoded? true})
 
   File
   (to-hl-response-body [^File body]
-    {:body     (.encode ^Base64$Encoder @base64-encoder ^bytes (Files/readAllBytes (.toPath body)))
+    {:body     (new String ^bytes (.encode ^Base64$Encoder @base64-encoder ^bytes (Files/readAllBytes (.toPath body))))
      :encoded? true})
 
   String
@@ -58,27 +58,12 @@
 
   URL
   (to-hl-response-body [^URL body]
-    {:body     (.encode ^Base64$Encoder @base64-encoder ^bytes (.readAllBytes (.getInputStream (.openConnection body))))
+    {:body     (new String ^bytes (.encode ^Base64$Encoder @base64-encoder ^bytes (.readAllBytes (.getInputStream (.openConnection body)))))
      :encoded? true})
 
-  IPersistentSet
-  (to-hl-response-body [^IPersistentSet body]
+  IPersistentCollection
+  (to-hl-response-body [^IPersistentCollection body]
     {:body     body
-     :encoded? false})
-
-  PersistentVector
-  (to-hl-response-body [^PersistentVector body]
-    {:body     body
-     :encoded? false})
-
-  IPersistentMap
-  (to-hl-response-body [^IPersistentMap body]
-    {:body     body
-     :encoded? false})
-
-  ISeq
-  (to-hl-response-body [^ISeq body]
-    {:body     (s/join "\n" (map str body))
      :encoded? false})
 
   Object

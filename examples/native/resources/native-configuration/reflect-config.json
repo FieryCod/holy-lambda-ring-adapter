@@ -1,0 +1,104 @@
+[ {
+  "name" : "[B"
+}, {
+  "name" : "[C"
+}, {
+  "name" : "[D"
+}, {
+  "name" : "[F"
+}, {
+  "name" : "[I"
+}, {
+  "name" : "[J"
+}, {
+  "name" : "[Lcom.fasterxml.jackson.databind.deser.Deserializers;"
+}, {
+  "name" : "[Lcom.fasterxml.jackson.databind.deser.KeyDeserializers;"
+}, {
+  "name" : "[Lcom.fasterxml.jackson.databind.deser.ValueInstantiators;"
+}, {
+  "name" : "[Lcom.fasterxml.jackson.databind.ser.Serializers;"
+}, {
+  "name" : "[Ljava.lang.Object;"
+}, {
+  "name" : "[Lreitit.Trie$Matcher;"
+}, {
+  "name" : "[S"
+}, {
+  "name" : "[Z"
+}, {
+  "name" : "com.fasterxml.jackson.databind.ext.Java7SupportImpl",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ ]
+  } ]
+},
+  { "name": "org.msgpack.template.builder.JavassistTemplateBuilder",
+    "allPublicMethods": true,
+    "allPublicConstructors": true
+  },
+  {
+  "name" : "java.io.OutputStream",
+  "queryAllPublicMethods" : true
+}, {
+  "name" : "java.io.Serializable",
+  "queryAllDeclaredMethods" : true
+}, {
+  "name" : "java.lang.Class",
+  "queryAllPublicMethods" : true
+}, {
+  "name" : "java.lang.Iterable",
+  "queryAllDeclaredMethods" : true
+}, {
+  "name" : "java.lang.Object",
+  "queryAllPublicMethods" : true
+}, {
+  "name" : "java.lang.Runnable",
+  "queryAllDeclaredMethods" : true
+}, {
+  "name" : "java.lang.String",
+  "queryAllPublicMethods" : true,
+  "methods" : [ {
+    "name" : "contains",
+    "parameterTypes" : [ "java.lang.CharSequence" ]
+  } ]
+}, {
+  "name" : "java.lang.reflect.AccessibleObject",
+  "methods" : [ {
+    "name" : "canAccess",
+    "parameterTypes" : [ "java.lang.Object" ]
+  } ]
+}, {
+  "name" : "java.security.MessageDigestSpi"
+}, {
+  "name" : "java.security.SecureRandomParameters"
+}, {
+  "name" : "java.util.Map",
+  "queryAllDeclaredMethods" : true
+}, {
+  "name" : "java.util.Properties",
+  "queryAllPublicMethods" : true,
+  "methods" : [ {
+    "name" : "getProperty",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "java.util.concurrent.Callable",
+  "queryAllDeclaredMethods" : true
+}, {
+  "name" : "muuntaja.protocols.StreamableResponse",
+  "allPublicFields" : true,
+  "queryAllPublicMethods" : true
+}, {
+  "name" : "sun.security.provider.NativePRNG",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ ]
+  } ]
+}, {
+  "name" : "sun.security.provider.SHA",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ ]
+  } ]
+} ]

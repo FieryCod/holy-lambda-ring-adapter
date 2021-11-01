@@ -14,7 +14,7 @@
     - [HttpApi](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html#http-api-examples)
   - Java Version >= 11
   - GraalVM Native Image >= 21.2.0
-  - Holy Lambda >= 0.6.0
+  - Holy Lambda >= 0.6.0 [all backends: native, babashka, clojure]
 
 ## Usage
   - **With plain [ring](https://github.com/ring-clojure/ring)**

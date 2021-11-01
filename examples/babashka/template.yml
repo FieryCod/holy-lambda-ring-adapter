@@ -33,10 +33,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: provided.al2
-      Handler: core.ExampleLambda
+      Handler: core.HttpApiGatewayProxy
       CodeUri: src
       Layers:
-        - arn:aws:lambda:eu-central-1:443526418261:layer:holy-lambda-babashka-runtime-amd64:2
+        - arn:aws:lambda:eu-central-1:443526418261:layer:holy-lambda-babashka-runtime-amd64:3
         - !Ref DependenciesLayer
       # Architectures:
       #   - arm64
