@@ -9,6 +9,19 @@
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-green.svg"></a>
 </p>
 
+## Rationale
+I wanted to create a library that allows to use known Clojure tools to develop API's on AWS Lambda.
+
+**A library that**
+
+- prevents AWS to vendor lock you with Lambda,
+- allows for fast feedback loop while developing API locally,
+- implements a full Ring spec,
+- supports serving resources from AWS Lambda,
+- is fast, so that cold starts are minimal
+
+This is why holy-lambda-ring-adapter was released. An adapter is a part of holy-lambda project and is already used in production.
+
 ## Compatibility
   - AWS ApiGateway Lambda Integration
     - [HttpApi](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html#http-api-examples)
