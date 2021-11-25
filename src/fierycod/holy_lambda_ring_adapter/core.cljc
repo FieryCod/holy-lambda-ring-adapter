@@ -85,7 +85,7 @@
      :isBase64Encoded encoded?
      :headers         (:headers response)}))
 
-(defn wrap-hl-req-res-model
+(defn ring<->hl-middleware
   "Middleware that converts Ring Request/Response model to Holy Lambda (AWS Lambda) Request/Response model.
   Ideal for running regular ring applications on AWS Lambda.
 
@@ -107,7 +107,7 @@
      :headers {}
      :body \"Hello World\"}
 
-  (def HttpApiProxyGateway (hlra/wrap-hl-req-res-model ring-handler))
+  (def HttpApiProxyGateway (hlra/ring<->hl-middleware ring-handler))
 
   (h/entrypoint [#'HttpApiProxyGateway])
   ```
@@ -128,7 +128,7 @@
                 :coercion   coerction
                 :middleware middlewares}})))
 
-  (def HttpApiProxyGateway (hlra/wrap-hl-req-res-model muuntaja-ring-handler))
+  (def HttpApiProxyGateway (hlra/ring<->hl-middleware muuntaja-ring-handler))
 
   (h/entrypoint [#'HttpApiProxyGateway])
   ```"
