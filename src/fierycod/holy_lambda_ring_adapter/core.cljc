@@ -78,8 +78,8 @@
   (h/entrypoint [#'HttpApiProxyGateway])
   ```"
   [response]
-  (let [^RingResponseBody body  (:body response)
-        {:keys [body encoded?]} (impl/to-hl-response-body body)]
+  (let [^impl/RingResponseBody body (:body response)
+        {:keys [body encoded?]}     (impl/to-hl-response-body body)]
     {:statusCode      (:status response)
      :body            body
      :isBase64Encoded encoded?
@@ -140,3 +140,8 @@
      (handler (hl-request->ring-request!! request)
               (fn [response] (respond (ring-response->hl-response response)))
               raise))))
+
+(def ^:deprecated wrap-hl-req-res-model
+  "DEPRECATED. Subject to remove in 0.5.0.
+  Use `ring<->hl-middleware` instead!"
+  ring<->hl-middleware)

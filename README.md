@@ -27,7 +27,7 @@ This is why holy-lambda-ring-adapter was released. An adapter is a part of holy-
     - [HttpApi](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html#http-api-examples)
   - Java Version >= 11
   - GraalVM Native Image >= 21.2.0
-  - Holy Lambda >= 0.6.0 [all backends: [native](https://fierycod.github.io/holy-lambda/#/native-backend-tutorial), [babashka](https://fierycod.github.io/holy-lambda/#/babashka-backend-tutorial), [clojure](https://fierycod.github.io/holy-lambda/#/clojure-backend-tutorial)]
+  - Holy Lambda >= 0.6.0 [all backends: [native](https://fierycod.github.io/holy-lambda/#/native-backend-tutorial), [babashka](https://fierycod.github.io/holy-lambda/#/babashka-backend-tutorial), [clojure](https://fierycod.github.io/holy-lambda/#/clojure-backend-tutorial)
 
 ## Usage
   - **With plain [ring](https://github.com/ring-clojure/ring)**
@@ -43,7 +43,7 @@ This is why holy-lambda-ring-adapter was released. An adapter is a part of holy-
        :headers {}
        :body \"Hello World\"}
   
-    (def HttpApiProxyGateway (hlra/wrap-hl-req-res-model ring-handler))
+    (def HttpApiProxyGateway (hlra/ring<->hl-middleware ring-handler))
   
     (h/entrypoint [#'HttpApiProxyGateway])
     ```
@@ -63,7 +63,7 @@ This is why holy-lambda-ring-adapter was released. An adapter is a part of holy-
                   :coercion   coerction
                   :middleware middlewares}})))
   
-    (def HttpApiProxyGateway (hlra/wrap-hl-req-res-model muuntaja-ring-handler))
+    (def HttpApiProxyGateway (hlra/ring<->hl-middleware muuntaja-ring-handler))
   
     (h/entrypoint [#'HttpApiProxyGateway])
     ```

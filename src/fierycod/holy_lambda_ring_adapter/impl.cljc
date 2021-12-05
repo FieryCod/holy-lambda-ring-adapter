@@ -7,12 +7,10 @@
    [clojure.lang IPersistentCollection])
   #?(:bb
      (:require
-      [clojure.string :as s]
       [clojure.java.io :as io])
      :clj
      (:require
       [ring.util.response :as resp]
-      [clojure.string :as s]
       [clojure.java.io :as io])))
 
 #?(:bb nil

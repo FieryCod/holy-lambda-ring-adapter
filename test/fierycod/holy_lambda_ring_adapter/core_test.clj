@@ -197,12 +197,12 @@
                 :body            "hello world HTTP/1.1",
                 :isBase64Encoded false,
                 :headers         {"something" "something"}}
-               ((hra/wrap-hl-req-res-model basic-ring-handler) request2)))
+               ((hra/ring<->hl-middleware basic-ring-handler) request2)))
       (t/is (= {:statusCode      200,
                 :body            "hello world HTTP/1.1",
                 :isBase64Encoded false,
                 :headers         {"something" "something"}}
-               ((hra/wrap-hl-req-res-model basic-ring-handler-async) request2 identity identity))))))
+               ((hra/ring<->hl-middleware basic-ring-handler-async) request2 identity identity))))))
 
 (t/deftest http-api-json-coerce-1
   (t/testing "json coercion should work"
@@ -247,14 +247,14 @@
                 :body            "eyJoZWxsbyI6IndvcmxkIiwiaW5uZXItYm9keSI6eyJoZWxsbyI6IndvcmxkIn19",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               ((hra/wrap-hl-req-res-model handler) request)))
+               ((hra/ring<->hl-middleware handler) request)))
 
       ;; The case where (HL >= 0.6.2) does automatically decodes the input
       (t/is (= {:statusCode      200,
                 :body            "eyJoZWxsbyI6IndvcmxkIiwiaW5uZXItYm9keSI6eyJoZWxsbyI6IndvcmxkIn19",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               ((hra/wrap-hl-req-res-model handler) (-> request
+               ((hra/ring<->hl-middleware handler) (-> request
                                                         (assoc-in [:event :body] "{\n\t\"hello\": \"world\"\n}")
                                                         (assoc-in [:event :body-parsed] {:hello "world"}))))))))
 
@@ -304,17 +304,17 @@
                 :body            "eyJoZWxsbyI6IndvcmxkIiwiZm9ybS1wYXJhbXMiOnsiaGVsbG8iOiJ3b3JsZCJ9fQ==",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               ((hra/wrap-hl-req-res-model handler) request)))
+               ((hra/ring<->hl-middleware handler) request)))
       (t/is (= {:statusCode      200,
                 :body "eyJoZWxsbyI6IndvcmxkIiwiZm9ybS1wYXJhbXMiOnsiYTMiOiIzIiwiYTkiOiI5IiwiYTciOiI3IiwiYTYiOiI2IiwiYTgiOiI4IiwiYSI6WyIxIiwiMiIsIjMiXSwiYTQiOiI0IiwiYTEiOiIxIiwiYTUiOiI1IiwiYTIiOiIyIn19",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               ((hra/wrap-hl-req-res-model handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&a2=2&a=1&a=2&a=3"))))
+               ((hra/ring<->hl-middleware handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&a2=2&a=1&a=2&a=3"))))
       (t/is (= {:statusCode      200,
                 :body "eyJoZWxsbyI6IndvcmxkIiwiZm9ybS1wYXJhbXMiOnsiYTMiOiIzIiwiYTkiOiI5IiwiYTciOiI3IiwiYTYiOiI2IiwiYTgiOiI4IiwiYSI6WyIxIiwiMiIsIjMiXSwiYTQiOiI0IiwiYTEiOiIxIiwiYTUiOiI1IiwiSGVsbG8gV29ybGQgSXQncyBNZSBZb3UgTG9va2luZyBGb3IiOiJIZWxsbyBXb3JsZCAhICEgISIsImEyIjoiMiJ9fQ==",
                 :isBase64Encoded true,
                 :headers         {"Content-Type" "application/json; charset=utf-8"}}
-               ((hra/wrap-hl-req-res-model handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&Hello+World+It%27s+Me+You+Looking+For=Hello+World+%21+%21+%21&a2=2&a=1&a=2&a=3")))))))
+               ((hra/ring<->hl-middleware handler) (assoc-in request [:event :body] "a3=3&a9=9&a7=7&a6=6&a8=8&a4=4&a1=1&a5=5&Hello+World+It%27s+Me+You+Looking+For=Hello+World+%21+%21+%21&a2=2&a=1&a=2&a=3")))))))
 
 (t/deftest binary-alike-data-response-1
   (t/testing "should correctly base64 encode a file"
@@ -336,7 +336,7 @@
                    :ctx
                    {}}
           file    (io/file "test/fierycod/holy_lambda_ring_adapter/logo.png")
-          handler (hra/wrap-hl-req-res-model
+          handler (hra/ring<->hl-middleware
                    (->reitit-ring-handler
                     [["/" {:get {:handler (fn [_request]
                                             (response/response file))}}]]))]
@@ -363,7 +363,7 @@
                    :ctx
                    {}}
           resource (io/resource "logo.png")
-          handler (hra/wrap-hl-req-res-model
+          handler (hra/ring<->hl-middleware
                    (->reitit-ring-handler
                     [["/" {:get {:handler (fn [_request]
                                             (response/response resource))}}]]))]

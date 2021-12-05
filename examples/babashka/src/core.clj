@@ -4,6 +4,6 @@
    [fierycod.holy-lambda-ring-adapter.core :as hlra]
    [fierycod.holy-lambda.core :as h]))
 
-(def HttpApiGatewayProxy (hlra/wrap-hl-req-res-model handler/router))
+(def HttpApiGatewayProxy (hlra/ring<->hl-middleware handler/router))
 
 (h/entrypoint [#'HttpApiGatewayProxy])
