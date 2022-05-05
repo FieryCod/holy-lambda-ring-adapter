@@ -41,7 +41,7 @@ This is why holy-lambda-ring-adapter was released. An adapter is a part of holy-
       [request]
       {:status 200
        :headers {}
-       :body \"Hello World\"}
+       :body \"Hello World\"})
   
     (def HttpApiProxyGateway (hlra/ring<->hl-middleware ring-handler))
   
