@@ -1,14 +1,14 @@
-{:deps {}
+{:deps  {}
  :paths ["src" "resources"]
  :aliases
- {:dev {:deps {io.github.FieryCod/holy-lambda {:mvn/version "0.5.1-SNAPSHOT"}
-               clj-http/clj-http              {:mvn/version "3.12.3"}
-               metosin/reitit                 {:mvn/version "0.5.15"}
-               cheshire/cheshire              {:mvn/version "5.10.0"}
-               metosin/muuntaja               {:mvn/version "0.6.8"}
-               ring/ring                      {:mvn/version "1.9.4"}}}
+ {:dev  {:deps {io.github.FieryCod/holy-lambda {:mvn/version "0.5.1-SNAPSHOT"}
+                clj-http/clj-http              {:mvn/version "3.12.3"}
+                metosin/reitit                 {:mvn/version "0.5.15"}
+                cheshire/cheshire              {:mvn/version "5.10.0"}
+                metosin/muuntaja               {:mvn/version "0.6.8"}
+                ring/ring                      {:mvn/version "1.9.4"}}}
   :test {:extra-paths ["test" "resources-test"]
-         :extra-deps {io.github.cognitect-labs/test-runner
-                      {:git/tag "v0.5.0" :git/sha "b3fd0d2"}}
-         :main-opts ["-m" "cognitect.test-runner"]
-         :exec-fn cognitect.test-runner.api/test}}}
+         :extra-deps  {io.github.cognitect-labs/test-runner
+                       {:git/tag "v0.5.0" :git/sha "b3fd0d2"}}
+         :main-opts   ["-m" "cognitect.test-runner"]
+         :exec-fn     cognitect.test-runner.api/test}}}

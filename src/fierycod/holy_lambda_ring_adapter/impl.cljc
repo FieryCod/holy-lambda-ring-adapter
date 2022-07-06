@@ -77,18 +77,19 @@
 (defprotocol HLRequestBody
   (to-ring-request-body [body base64?] "Adapts the HLRequestBody to valid RingRequestBody"))
 
-(extend-protocol HLRequestBody
-  String
-  (to-ring-request-body [^String body base64?]
-    (io/input-stream
-     (if-not base64?
-       (.getBytes body)
-       (.decode ^Base64$Decoder @base64-decoder ^String body))))
+#?(:clj
+   (extend-protocol HLRequestBody
+     String
+     (to-ring-request-body [^String body base64?]
+       (io/input-stream
+        (if-not base64?
+          (.getBytes body)
+          (.decode ^Base64$Decoder @base64-decoder ^String body))))
 
-  Object
-  (to-ring-request-body [^Object body base64?]
-    (pr-str body))
+     Object
+     (to-ring-request-body [^Object body _base64?]
+       (pr-str body))
 
-  nil
-  (to-ring-request-body [_ _]
-    nil))
+     nil
+     (to-ring-request-body [_ _]
+       nil)))

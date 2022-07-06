@@ -1,6 +1,7 @@
 (ns fierycod.holy-lambda-ring-adapter.core
   (:require
    [clojure.string :as s]
+   [fierycod.holy-lambda-ring-adapter.codec :as codec]
    [fierycod.holy-lambda-ring-adapter.impl :as impl]))
 
 #?(:bb nil
@@ -30,20 +31,31 @@
   (h/entrypoint [#'HttpApiProxyGateway])
   ```"
   [{:keys [event ctx]}]
-  (let [request-ctx (event :requestContext)
-        http        (request-ctx :http)
-        headers     (event :headers)
-        base64?     (event :isBase64Encoded)]
-    {:server-port    #?(:clj (some-> (get headers "x-forwarded-port") (Integer/parseInt))
-                        :default nil)
+  (let [request-ctx (get event :requestContext)
+        http        (get request-ctx :http)
+        headers     (get event :headers)
+        base64?     (get event :isBase64Encoded)]
+    (when-not request-ctx
+      (throw (ex-info "Incorrect shape of AWS event. The adapter is compatible with HttpApi and AWS ApiGateway. If you're testing locally make sure the event shape is valid e.g. use `sam local start-api` instead of `sam local invoke`." {:ctx :hl-ring-adapter})))
+
+    {:server-port    (some-> (get headers "x-forwarded-port") (Integer/parseInt))
      :body           (impl/to-ring-request-body (:body event) base64?)
-     :server-name    (get http :sourceIp)
-     :remote-addr    (get http :sourceIp)
-     :uri            (get http :path)
-     :query-string   (get event :rawQueryString)
-     :scheme         (keyword (get headers "x-forwarded-proto"))
-     :request-method (keyword (s/lower-case (get http :method)))
-     :protocol       (get http :protocol)
+     :server-name    (or (get http :sourceIp)
+                         (get-in request-ctx [:identity :sourceIp]))
+     :remote-addr    (or (get http :sourceIp)
+                         (get-in request-ctx [:identity :sourceIp]))
+     :uri            (or (get http :path)
+                         (get event :path))
+     :query-string   (or (get event :rawQueryString)
+                         (some-> (get event :queryStringParameters)
+                                 codec/form-encode))
+     :scheme         (some-> (get headers "x-forwarded-proto" "http") keyword)
+     :request-method (some-> (or (get http :method)
+                                 (get request-ctx :httpMethod))
+                             s/lower-case
+                             keyword)
+     :protocol       (or (get http :protocol)
+                         (get request-ctx :protocol))
      :headers        headers
      :lambda         {:ctx   ctx
                       :event event}}))
@@ -137,9 +149,16 @@
     ([request]
      (ring-response->hl-response (handler (hl-request->ring-request!! request))))
     ([request respond raise]
-     (handler (hl-request->ring-request!! request)
-              (fn [response] (respond (ring-response->hl-response response)))
-              raise))))
+     (try
+       (handler (hl-request->ring-request!! request)
+                (fn [response]
+                  (try
+                    (respond (ring-response->hl-response response))
+                    (catch Exception ex
+                      (raise ex))))
+                raise)
+       (catch Exception ex
+         (raise ex))))))
 
 (def ^:deprecated wrap-hl-req-res-model
   "DEPRECATED. Subject to remove in 0.5.0.
