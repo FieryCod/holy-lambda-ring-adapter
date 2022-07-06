@@ -1,4 +1,4 @@
-(defproject io.github.FieryCod/holy-lambda-ring-adapter "0.1.1"
+(defproject io.github.FieryCod/holy-lambda-ring-adapter "0.1.2"
   :description "An adapter between Ring Core request/response model and Holy Lambda. Run Ring applications on AWS Lambda"
 
   :url "https://github.com/FieryCod/holy-lambda-ring-adapter"

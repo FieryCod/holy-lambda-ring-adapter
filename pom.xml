@@ -4,7 +4,7 @@
   <groupId>io.github.FieryCod</groupId>
   <artifactId>holy-lambda-ring-adapter</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
   <name>holy-lambda-ring-adapter</name>
   <description>An adapter between Ring Core request/response model and Holy Lambda. Run Ring applications on AWS Lambda</description>
   <url>https://github.com/FieryCod/holy-lambda-ring-adapter</url>
@@ -18,7 +18,7 @@
     <url>https://github.com/FieryCod/holy-lambda-ring-adapter</url>
     <connection>scm:git:git://github.com/FieryCod/holy-lambda-ring-adapter.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/FieryCod/holy-lambda-ring-adapter.git</developerConnection>
-    <tag>e017d4f3f122ffb27a94fbac7fa13f3e375e05da</tag>
+    <tag>c168a86f1c4382479d2ac72993b610d1193b4774</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
