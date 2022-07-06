@@ -36,7 +36,7 @@
         headers     (get event :headers)
         base64?     (get event :isBase64Encoded)]
     (when-not request-ctx
-      (throw (ex-info "Incorrect shape of AWS event. The adapter is compatible with HttpApi and AWS ApiGateway. If you're testing locally make sure the event shape is valid e.g. use `sam local start-api` instead of `sam local invoke`." {:ctx :hl-ring-adapter})))
+      (throw (ex-info "Incorrect shape of AWS event. The adapter is compatible with following integrations: HttpApi and RestApi on AWS Api Gateway service. If you're testing locally make sure the event shape is valid e.g. use `sam local start-api` instead of `sam local invoke`." {:ctx :hl-ring-adapter})))
 
     {:server-port    (some-> (get headers "x-forwarded-port") (Integer/parseInt))
      :body           (impl/to-ring-request-body (:body event) base64?)

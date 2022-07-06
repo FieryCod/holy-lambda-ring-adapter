@@ -25,7 +25,8 @@ This is why holy-lambda-ring-adapter was released. An adapter is a part of holy-
 ## Compatibility
   - AWS ApiGateway Lambda Integration
     - [HttpApi](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html#http-api-examples)
-  - Java Version >= 11
+    - [RestApi](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html) 
+  - Java Version >= 11 or Babashka >= 0.8.2
   - GraalVM Native Image >= 21.2.0
   - Holy Lambda >= 0.6.0 [all backends: [native](https://fierycod.github.io/holy-lambda/#/native-backend-tutorial), [babashka](https://fierycod.github.io/holy-lambda/#/babashka-backend-tutorial), [clojure](https://fierycod.github.io/holy-lambda/#/clojure-backend-tutorial)
 
