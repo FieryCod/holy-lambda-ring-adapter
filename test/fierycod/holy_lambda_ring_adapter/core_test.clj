@@ -202,7 +202,15 @@
                 :body            "hello world HTTP/1.1",
                 :isBase64Encoded false,
                 :headers         {"something" "something"}}
-               ((hra/ring<->hl-middleware basic-ring-handler-async) request2 identity identity))))))
+               ((hra/ring<->hl-middleware basic-ring-handler-async) request2 identity identity)))))
+
+  (t/testing "Ensure :headers is a map of downcase strings as keys"
+    (t/is (= {"content-type" "application/json"}
+             (:headers (request->ring-request-test {:event {:path "/foo"
+                                                            :isBase64Encoded false
+                                                            :headers {:Content-Type "application/json"}
+                                                            :requestContext {:httpMethod "GET"}}
+                                                    :ctx nil}))))))
 
 (t/deftest http-api-json-coerce-1
   (t/testing "json coercion should work"
