@@ -33,7 +33,12 @@
   [{:keys [event ctx]}]
   (let [request-ctx (get event :requestContext)
         http        (get request-ctx :http)
-        headers     (get event :headers)
+        headers     (persistent! (reduce (fn [acc [k v]]
+                                           (if (keyword? k)
+                                             (assoc! acc (.toLowerCase (name k)) v)
+                                             (assoc! acc k v)))
+                                         (transient {})
+                                         (get event :headers)))
         base64?     (get event :isBase64Encoded)]
     (when-not request-ctx
       (throw (ex-info "Incorrect shape of AWS event. The adapter is compatible with following integrations: HttpApi and RestApi on AWS Api Gateway service. If you're testing locally make sure the event shape is valid e.g. use `sam local start-api` instead of `sam local invoke`." {:ctx :hl-ring-adapter})))
@@ -90,12 +95,16 @@
   (h/entrypoint [#'HttpApiProxyGateway])
   ```"
   [response]
-  (let [^impl/RingResponseBody body (:body response)
-        {:keys [body encoded?]}     (impl/to-hl-response-body body)]
-    {:statusCode      (:status response)
-     :body            body
-     :isBase64Encoded encoded?
-     :headers         (:headers response)}))
+  (let [^impl/RingResponseBody body                (:body response)
+        {:keys [body encoded?]}                    (impl/to-hl-response-body body)
+        [single-value-headers multi-value-headers] ((juxt remove filter)
+                                                    (comp coll? val)
+                                                    (:headers response))]
+    (cond-> {:statusCode      (:status response)
+             :body            body
+             :isBase64Encoded encoded?}
+      (seq single-value-headers) (assoc :headers (into {} single-value-headers))
+      (seq multi-value-headers) (assoc :multiValueHeaders (into {} multi-value-headers)))))
 
 (defn ring<->hl-middleware
   "Middleware that converts Ring Request/Response model to Holy Lambda (AWS Lambda) Request/Response model.

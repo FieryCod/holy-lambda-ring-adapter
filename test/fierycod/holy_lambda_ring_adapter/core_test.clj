@@ -62,6 +62,34 @@
   [hl-request]
   (ring-spec-props (hra/hl-request->ring-request hl-request)))
 
+(t/deftest response-transform
+  (t/testing "should correctly parse single value headers"
+    (let [ring-response {:status 200
+                         :headers {"upgrade-insecure-requests" "1"}}]
+      (t/is (= {:statusCode 200,
+                 :body nil,
+                 :isBase64Encoded false,
+                 :headers {"upgrade-insecure-requests" "1"}}
+               (hra/ring-response->hl-response ring-response)))))
+  (t/testing "should correctly parse multi value headers"
+    (let [ring-response {:status 200
+                         :headers {"set-cookie" ["totalOrders=76" "merged-cart=1"]}}]
+      (t/is (= {:statusCode 200,
+                :body nil,
+                :isBase64Encoded false,
+                :multiValueHeaders {"set-cookie" ["totalOrders=76" "merged-cart=1"]}}
+               (hra/ring-response->hl-response ring-response)))))
+  (t/testing "should correctly parse a mix of single and multi value headers"
+    (let [ring-response {:status 200
+                         :headers {"upgrade-insecure-requests" "1"
+                                   "set-cookie" ["totalOrders=76" "merged-cart=1"]}}]
+      (t/is (= {:statusCode 200,
+                :body nil,
+                :isBase64Encoded false,
+                :headers {"upgrade-insecure-requests" "1"}
+                :multiValueHeaders {"set-cookie" ["totalOrders=76" "merged-cart=1"]}}
+               (hra/ring-response->hl-response ring-response))))))
+
 (t/deftest http-api-basic-1
   (t/testing "should correctly transform request->ring-request #1"
     (let [hl-request {:event
@@ -190,8 +218,7 @@
                (handler (request->ring-request-test request1))))
       (t/is (= {:statusCode      200,
                 :body            "Hello world",
-                :isBase64Encoded false,
-                :headers         nil}
+                :isBase64Encoded false}
                (hra/ring-response->hl-response (handler (request->ring-request-test request2)))))
       (t/is (= {:statusCode      200,
                 :body            "hello world HTTP/1.1",
@@ -202,7 +229,15 @@
                 :body            "hello world HTTP/1.1",
                 :isBase64Encoded false,
                 :headers         {"something" "something"}}
-               ((hra/ring<->hl-middleware basic-ring-handler-async) request2 identity identity))))))
+               ((hra/ring<->hl-middleware basic-ring-handler-async) request2 identity identity)))))
+
+  (t/testing "Ensure :headers is a map of downcase strings as keys"
+    (t/is (= {"content-type" "application/json"}
+             (:headers (request->ring-request-test {:event {:path "/foo"
+                                                            :isBase64Encoded false
+                                                            :headers {:Content-Type "application/json"}
+                                                            :requestContext {:httpMethod "GET"}}
+                                                    :ctx nil}))))))
 
 (t/deftest http-api-json-coerce-1
   (t/testing "json coercion should work"
