@@ -98,7 +98,7 @@
   (let [^impl/RingResponseBody body                (:body response)
         {:keys [body encoded?]}                    (impl/to-hl-response-body body)
         [single-value-headers multi-value-headers] ((juxt remove filter)
-                                                    (comp coll? second)
+                                                    (comp coll? val)
                                                     (:headers response))]
     (cond-> {:statusCode      (:status response)
              :body            body
