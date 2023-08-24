@@ -14,21 +14,21 @@ I wanted to create a library that allows to use known Clojure tools to develop A
 
 **A library that**
 
-- prevents AWS to vendor lock you with Lambda,
-- allows for fast feedback loop while developing API locally,
-- implements a full Ring spec,
-- supports serving resources from AWS Lambda,
+- prevents AWS to vendor lock you with Lambda
+- allows for fast feedback loop while developing API locally
+- implements a full Ring spec
+- supports serving resources from AWS Lambda
 - is fast, so that cold starts are minimal
 
-This is why holy-lambda-ring-adapter was released. An adapter is a part of holy-lambda project and is already used in production.
+This is why `holy-lambda-ring-adapter` was released. An adapter is a part of holy-lambda project and is already used in production.
 
 ## Compatibility
-  - AWS ApiGateway Lambda Integration
+  - AWS APIGateway Lambda Integration
     - [HttpApi](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html#http-api-examples)
     - [RestApi](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html) 
   - Java Version >= 11 or Babashka >= 0.8.2
   - GraalVM Native Image >= 21.2.0
-  - Holy Lambda >= 0.6.0 [all backends: [native](https://fierycod.github.io/holy-lambda/#/native-backend-tutorial), [babashka](https://fierycod.github.io/holy-lambda/#/babashka-backend-tutorial), [clojure](https://fierycod.github.io/holy-lambda/#/clojure-backend-tutorial)
+  - Holy Lambda >= 0.6.0 [all backends: [native](https://fierycod.github.io/holy-lambda/#/native-backend-tutorial), [babashka](https://fierycod.github.io/holy-lambda/#/babashka-backend-tutorial), [clojure](https://fierycod.github.io/holy-lambda/#/clojure-backend-tutorial)]
 
 ## Usage
   - **With plain [ring](https://github.com/ring-clojure/ring)**
